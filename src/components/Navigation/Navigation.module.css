@@ -1,0 +1,99 @@
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 28px);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.track {
+  position: relative;
+  width: 260px;
+  height: 16px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.trackLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(30, 26, 22, 0.14);
+  transform: translateY(-50%);
+}
+
+.dot {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(30, 26, 22, 0.7);
+  transform: translate(-50%, -50%);
+  transition: none;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+  pointer-events: all;
+}
+
+.item {
+  display: flex;
+}
+
+.button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px 4px;
+  font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(30, 26, 22, 0.36);
+  transition: color 200ms ease, opacity 200ms ease;
+  line-height: 1;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.button:hover {
+  color: rgba(30, 26, 22, 0.68);
+}
+
+.button.active {
+  color: rgba(30, 26, 22, 0.9);
+}
+
+@media (max-width: 480px) {
+  .list {
+    gap: 20px;
+  }
+
+  .button {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+  }
+
+  .track {
+    width: 200px;
+    margin-bottom: 12px;
+  }
+}
