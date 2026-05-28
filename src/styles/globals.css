@@ -8,7 +8,7 @@ html, body, #root {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #F7F5F0;
+  background: #F2EFE9;
 }
 
 body {
@@ -18,9 +18,9 @@ body {
 }
 
 :focus-visible {
-  outline: 1.5px solid rgba(30, 26, 22, 0.6);
-  outline-offset: 4px;
-  border-radius: 2px;
+  outline: 1px solid rgba(50, 44, 36, 0.4);
+  outline-offset: 5px;
+  border-radius: 1px;
 }
 
 :focus:not(:focus-visible) {

@@ -40,7 +40,7 @@ export default function Experience({ active, reducedMotion, isMobile, onSceneRea
         position: [0, 3.8, 5.2],
       }}
       onCreated={({ gl }) => {
-        gl.setClearColor(SCENE.background)
+        gl.setClearColor(SCENE.background, 1)
         // Detect context loss
         gl.domElement.addEventListener('webglcontextlost', () => {
           setHasFailed(true)

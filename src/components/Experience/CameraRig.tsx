@@ -12,43 +12,88 @@ interface CameraRigProps {
   isMobile: boolean
 }
 
+const mouse = { x: 0, y: 0 }
+const smoothMouse = { x: 0, y: 0 }
+
+function onMouseMove(e: MouseEvent) {
+  mouse.x = (e.clientX / window.innerWidth - 0.5) * 2
+  mouse.y = -(e.clientY / window.innerHeight - 0.5) * 2
+}
+
 export default function CameraRig({ active, reducedMotion, isMobile }: CameraRigProps) {
   const { camera } = useThree()
   const targetRef = useRef(new THREE.Vector3(0, 0, 0))
   const tlRef = useRef<gsap.core.Timeline | null>(null)
   const initialized = useRef(false)
+  const prevActive = useRef<DestinationId | null>(null)
 
   const getPose = useCallback((id: DestinationId): CameraPose => {
     const dest = DESTINATIONS.find(d => d.id === id)!
     return isMobile ? dest.mobile : dest.desktop
   }, [isMobile])
 
-  // Set initial camera pose without animation
+  // Mouse parallax — subtle target shift, no positional drift
+  useEffect(() => {
+    window.addEventListener('mousemove', onMouseMove, { passive: true })
+    return () => window.removeEventListener('mousemove', onMouseMove)
+  }, [])
+
+  // Reveal: camera starts slightly withdrawn, drifts to INDEX pose
   useEffect(() => {
     if (initialized.current) return
     initialized.current = true
+    prevActive.current = active
+
     const pose = getPose(active)
-    camera.position.set(...pose.position)
-    ;(camera as THREE.PerspectiveCamera).fov = pose.fov
+
+    camera.position.set(
+      pose.position[0] * 0.96,
+      pose.position[1] * (reducedMotion ? 1 : 1.30),
+      pose.position[2] * (reducedMotion ? 1 : 1.14)
+    )
+    ;(camera as THREE.PerspectiveCamera).fov = pose.fov + (reducedMotion ? 0 : 7)
     ;(camera as THREE.PerspectiveCamera).updateProjectionMatrix()
     targetRef.current.set(...pose.target)
     camera.lookAt(targetRef.current)
-  }, [camera, active, getPose])
 
-  // Animate to new destination
+    const duration = reducedMotion
+      ? SCENE.transition.reducedMotionDuration
+      : SCENE.transition.revealDuration
+
+    const proxy = {
+      px: camera.position.x,
+      py: camera.position.y,
+      pz: camera.position.z,
+      fov: (camera as THREE.PerspectiveCamera).fov,
+    }
+
+    gsap.to(proxy, {
+      px: pose.position[0],
+      py: pose.position[1],
+      pz: pose.position[2],
+      fov: pose.fov,
+      duration,
+      ease: SCENE.transition.revealEase,
+      onUpdate() {
+        camera.position.set(proxy.px, proxy.py, proxy.pz)
+        ;(camera as THREE.PerspectiveCamera).fov = proxy.fov
+        ;(camera as THREE.PerspectiveCamera).updateProjectionMatrix()
+      },
+    })
+  }, [camera, active, getPose, reducedMotion])
+
+  // Navigate to new destination
   useEffect(() => {
     if (!initialized.current) return
+    if (prevActive.current === active) return
+    prevActive.current = active
 
     const pose = getPose(active)
     const duration = reducedMotion
       ? SCENE.transition.reducedMotionDuration
       : SCENE.transition.duration
 
-    // Kill previous timeline safely
-    if (tlRef.current) {
-      tlRef.current.kill()
-      tlRef.current = null
-    }
+    if (tlRef.current) { tlRef.current.kill(); tlRef.current = null }
 
     const proxy = {
       px: camera.position.x,
@@ -80,15 +125,27 @@ export default function CameraRig({ active, reducedMotion, isMobile }: CameraRig
     })
 
     tlRef.current = tl
-
-    return () => {
-      tl.kill()
-    }
+    return () => { tl.kill() }
   }, [active, camera, getPose, reducedMotion])
 
-  // Apply lookAt every frame so the camera tracks the target during transition
+  // Per-frame: smooth parallax offset on lookAt target + apply
   useFrame(() => {
-    camera.lookAt(targetRef.current)
+    const str = SCENE.parallax.strength
+    const sm = SCENE.parallax.smoothing
+
+    if (!reducedMotion) {
+      smoothMouse.x += (mouse.x - smoothMouse.x) * sm
+      smoothMouse.y += (mouse.y - smoothMouse.y) * sm
+    } else {
+      smoothMouse.x = 0
+      smoothMouse.y = 0
+    }
+
+    camera.lookAt(
+      targetRef.current.x + smoothMouse.x * str,
+      targetRef.current.y + smoothMouse.y * str * 0.45,
+      targetRef.current.z
+    )
   })
 
   return null
