@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 430" role="img" aria-labelledby="title desc">
+  <title id="title">EL Monogram</title>
+  <desc id="desc">Clean angular EL monogram rebuilt from the handwritten reference, prepared for 3D extrusion.</desc>
+  <g id="el-monogram" fill="#171717">
+    <!-- E: one continuous, extrusion-safe silhouette -->
+    <path id="letter-e" d="
+      M 78 314
+      L 132 109
+      L 164 82
+      L 421 33
+      L 478 85
+      L 212 139
+      L 199 181
+      L 369 151
+      L 426 216
+      L 186 260
+      L 177 293
+      L 376 322
+      L 431 393
+      L 113 349
+      Z"/>
+    <!-- L: separate silhouette so its spacing can be tuned in 3D -->
+    <path id="letter-l" d="
+      M 448 316
+      L 535 91
+      L 582 107
+      L 635 147
+      L 575 286
+      L 749 306
+      L 823 380
+      L 478 361
+      Z"/>
+  </g>
+</svg>
