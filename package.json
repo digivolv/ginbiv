@@ -1,0 +1,29 @@
+{
+  "name": "ginbiv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "remotion studio src/index.ts",
+    "build": "remotion render src/index.ts ELSculpture out/ELSculpture.mp4",
+    "render:still": "remotion still src/index.ts ELSculpture out/preview.png"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://local_proxy@127.0.0.1:42265/git/digivolv/ginbiv"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@remotion/bundler": "^4.0.468",
+    "@remotion/cli": "^4.0.468",
+    "@remotion/renderer": "^4.0.468",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "remotion": "^4.0.468",
+    "typescript": "^6.0.3"
+  }
+}
