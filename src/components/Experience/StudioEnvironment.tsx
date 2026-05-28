@@ -5,13 +5,14 @@ export default function StudioEnvironment() {
   const L = SCENE.lights
   const F = SCENE.floor
   const CS = SCENE.contactShadow
+  const S = L.shadowCameraSize
 
   return (
     <>
-      {/* Warm ambient fill */}
+      {/* Low ambient — just lifts shadows off black, preserves shadow visibility */}
       <ambientLight color={L.ambientColor} intensity={L.ambientIntensity} />
 
-      {/* Key light — dominant directional from upper-right, casts shadows */}
+      {/* Key light — raking from upper-right-front, primary shadow caster */}
       <directionalLight
         color={L.keyColor}
         intensity={L.keyIntensity}
@@ -22,28 +23,28 @@ export default function StudioEnvironment() {
         shadow-bias={L.shadowBias}
         shadow-radius={L.shadowRadius}
         shadow-camera-near={0.5}
-        shadow-camera-far={40}
-        shadow-camera-left={-8}
-        shadow-camera-right={8}
-        shadow-camera-top={8}
-        shadow-camera-bottom={-8}
+        shadow-camera-far={50}
+        shadow-camera-left={-S}
+        shadow-camera-right={S}
+        shadow-camera-top={S}
+        shadow-camera-bottom={-S}
       />
 
-      {/* Cool fill from left-front */}
+      {/* Fill — soft cool from upper-left, keeps shadow sides readable */}
       <directionalLight
         color={L.fillColor}
         intensity={L.fillIntensity}
         position={L.fillPosition}
       />
 
-      {/* Soft rim from behind-above */}
+      {/* Rim — back-high, catches top bevel edges */}
       <directionalLight
         color={L.rimColor}
         intensity={L.rimIntensity}
         position={L.rimPosition}
       />
 
-      {/* Studio floor plane */}
+      {/* Studio floor */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -0.001, 0]}
@@ -57,7 +58,7 @@ export default function StudioEnvironment() {
         />
       </mesh>
 
-      {/* Contact shadow — high-quality soft shadow independent of shadow maps */}
+      {/* ContactShadows — soft pooled shadow under the sculpture, always visible */}
       <ContactShadows
         position={[0, 0.001, 0]}
         opacity={CS.opacity}
@@ -65,7 +66,7 @@ export default function StudioEnvironment() {
         far={CS.far}
         resolution={CS.resolution}
         color={CS.color}
-        scale={14}
+        scale={16}
       />
     </>
   )

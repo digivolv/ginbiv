@@ -1,5 +1,6 @@
 import { Suspense, useCallback, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
+import * as THREE from 'three'
 import { SCENE } from '../../config/scene'
 import type { DestinationId } from '../../config/destinations'
 import CameraRig from './CameraRig'
@@ -39,9 +40,13 @@ export default function Experience({ active, reducedMotion, isMobile, onSceneRea
         far: SCENE.camera.far,
         position: [0, 3.8, 5.2],
       }}
-      onCreated={({ gl }) => {
+      onCreated={({ gl, scene }) => {
         gl.setClearColor(SCENE.background, 1)
-        // Detect context loss
+        gl.shadowMap.enabled = true
+        gl.shadowMap.type = THREE.PCFSoftShadowMap
+        // Fog: fades floor into background at distance — hides horizon seam, creates cyc-wall feel
+        // Tight fog start: ensures floor fades into background before the horizon seam
+        scene.fog = new THREE.Fog(SCENE.background, 10, 28)
         gl.domElement.addEventListener('webglcontextlost', () => {
           setHasFailed(true)
         })
