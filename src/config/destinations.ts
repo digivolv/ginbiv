@@ -17,60 +17,60 @@ export const DESTINATIONS: Destination[] = [
   {
     id: 'INDEX',
     label: 'INDEX',
-    // Iconic establishing: full EL visible, generous negative space, oblique elevation
+    // Establishing: full EL readable, oblique elevation, generous sky above
     desktop: {
-      position: [0.2, 3.2, 4.8],
-      target: [0, 0.08, 0],
+      position: [0.3, 3.0, 4.6],
+      target: [0, 0.11, 0],
       fov: 44,
     },
     mobile: {
-      position: [0, 2.0, 4.0],
-      target: [0, 0.28, 0],
-      fov: 64,
+      position: [0, 1.2, 4.0],
+      target: [0, 0.11, 0],
+      fov: 58,
     },
   },
   {
     id: 'WORK',
     label: 'WORK',
-    // Architectural: very close to E's raised edge, dramatic bevel reveal
+    // Close left-front oblique: E letter form readable, extrusion wall height prominent
     desktop: {
-      position: [-1.6, 0.78, 1.85],
-      target: [-0.5, 0.16, -0.08],
-      fov: 34,
+      position: [-2.2, 1.2, 2.8],
+      target: [-0.3, 0.11, 0],
+      fov: 36,
     },
     mobile: {
-      position: [-1.2, 0.9, 2.5],
-      target: [-0.3, 0.14, 0.1],
+      position: [-1.8, 1.1, 3.4],
+      target: [-0.3, 0.12, 0],
       fov: 46,
     },
   },
   {
     id: 'ABOUT',
     label: 'ABOUT',
-    // Elevated: clear top-down with strong diagonal, both letters together from height
+    // Near vertical plan: both letters as pure graphic shapes from above
     desktop: {
-      position: [0.6, 5.2, 1.8],
-      target: [0, 0.1, -0.4],
-      fov: 40,
+      position: [0.3, 5.4, 1.0],
+      target: [0, 0, -0.3],
+      fov: 42,
     },
     mobile: {
-      position: [0.3, 4.6, 2.8],
-      target: [0, 0.15, -0.1],
+      position: [0.2, 4.6, 2.4],
+      target: [0, 0, 0],
       fov: 58,
     },
   },
   {
     id: 'CONTACT',
     label: 'CONTACT',
-    // Intimate: gliding close to the L's terminal stroke, almost touching the floor
+    // Close right-front oblique: L letter form and terminal clearly readable, intimate scale
     desktop: {
-      position: [2.1, 1.05, 2.1],
-      target: [0.85, 0.12, -0.05],
+      position: [2.6, 1.2, 2.6],
+      target: [0.75, 0.11, 0],
       fov: 32,
     },
     mobile: {
-      position: [1.9, 1.3, 2.9],
-      target: [0.8, 0.15, 0.1],
+      position: [2.4, 0.7, 3.0],
+      target: [0.8, 0.12, 0],
       fov: 48,
     },
   },
