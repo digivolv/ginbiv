@@ -45,7 +45,29 @@ export default function Monogram({ onReady }: MonogramProps) {
         for (const path of data.paths) {
           const shapes = SVGLoader.createShapes(path)
           for (const shape of shapes) {
-            geos.push(new THREE.ExtrudeGeometry(shape, extrudeSettings))
+            const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings)
+
+            // SVG Y-axis points downward; Three.js Y points upward.
+            // SVGLoader preserves SVG y values, so without correction the
+            // letter silhouettes are vertically inverted in 3D space.
+            // applyMatrix4 flips Y on positions, updates normals via the
+            // inverse-transpose normal matrix, and refreshes bounding
+            // box + sphere in one atomic call.
+            geo.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1))
+
+            // A Y-reflection inverts triangle winding (CW ↔ CCW).
+            // Swap vertex 1 and 2 of every triangle to restore outward-facing
+            // front faces before recomputing smooth vertex normals.
+            const idx = geo.index!
+            for (let i = 0; i < idx.count; i += 3) {
+              const tmp = idx.getX(i + 1)
+              idx.setX(i + 1, idx.getX(i + 2))
+              idx.setX(i + 2, tmp)
+            }
+            idx.needsUpdate = true
+            geo.computeVertexNormals()
+
+            geos.push(geo)
           }
         }
 
