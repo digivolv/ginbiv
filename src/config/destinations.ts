@@ -17,15 +17,15 @@ export const DESTINATIONS: Destination[] = [
   {
     id: 'INDEX',
     label: 'INDEX',
-    // Establishing: full EL readable, oblique elevation, generous sky above
+    // Hero: near-vertical plan view, EL as pure graphic from above — primary landing composition
     desktop: {
-      position: [0.3, 3.0, 4.6],
-      target: [0, 0.11, 0],
-      fov: 44,
+      position: [0.3, 5.4, 1.0],
+      target: [0, 0, -0.3],
+      fov: 42,
     },
     mobile: {
-      position: [0, 1.2, 4.0],
-      target: [0, 0.11, 0],
+      position: [0.2, 4.6, 2.4],
+      target: [0, 0, 0],
       fov: 58,
     },
   },
@@ -47,16 +47,16 @@ export const DESTINATIONS: Destination[] = [
   {
     id: 'ABOUT',
     label: 'ABOUT',
-    // Near vertical plan: both letters as pure graphic shapes from above
+    // Editorial oblique: both letters in full 3/4 view, spacious negative space, dimensional relationship clear
     desktop: {
-      position: [0.3, 5.4, 1.0],
-      target: [0, 0, -0.3],
-      fov: 42,
+      position: [0.5, 3.8, 5.5],
+      target: [0, 0.1, 0],
+      fov: 40,
     },
     mobile: {
-      position: [0.2, 4.6, 2.4],
-      target: [0, 0, 0],
-      fov: 58,
+      position: [0.2, 2.4, 4.8],
+      target: [0, 0.11, 0],
+      fov: 54,
     },
   },
   {
