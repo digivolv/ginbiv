@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Opportunity {
+  id                    String       @id @default(cuid())
+  sourceType            String       // post | comment | manual
+  subreddit             String
+  redditId              String?      @unique
+  redditUrl             String?
+  parentRedditId        String?
+  title                 String?
+  author                String?
+  body                  String
+  parentContext         String?
+  createdAtReddit       DateTime?
+  discoveredAt          DateTime     @default(now())
+
+  // Classification output
+  painPoint             String?      // see PainPoint enum in types
+  emotionalState        String?      // see EmotionalState enum in types
+  relevanceScore        Int?
+  urgencyScore          Int?
+  promoSuitabilityScore Int?
+  promoRiskScore        Int?
+  classificationReasoning String?
+  safetyNotes           String?
+
+  // Agent decisions
+  autonomyEligible      Boolean      @default(false)
+  safetyStatus          String?      // safe | unsafe | crisis | review_required | pending
+  isCrisis              Boolean      @default(false)
+  shouldAutopost        Boolean      @default(false)
+
+  // Workflow state
+  status                String       @default("new")
+  // new | classifying | classified | drafting | drafted | approved | rejected
+  // copied | posted_manually | auto_posted | false_positive | error
+
+  notes                 String?
+  rawJson               String?
+
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  drafts                DraftReply[]
+  auditEvents           AuditEvent[]
+}
+
+model DraftReply {
+  id            String      @id @default(cuid())
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  draftType     String      // no_promo | soft_promo | crisis_safe | short_reply
+  body          String
+  rationale     String?
+  riskNotes     String?
+
+  isApproved    Boolean     @default(false)
+  isCopied      Boolean     @default(false)
+  isAutoPosted  Boolean     @default(false)
+  redditReplyId String?
+  postedAt      DateTime?
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model SubredditPolicy {
+  id                            String    @id @default(cuid())
+  subreddit                     String    @unique
+  isAllowed                     Boolean   @default(true)
+  allowAutonomousSupportReplies Boolean   @default(false)
+  allowPromoWithReview          Boolean   @default(false)
+  allowLinks                    Boolean   @default(false)
+  maxRepliesPerDay              Int       @default(3)
+  notes                         String?
+  lastReviewedAt                DateTime?
+  createdAt                     DateTime  @default(now())
+  updatedAt                     DateTime  @updatedAt
+}
+
+model AuthorBlock {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
+}
+
+model AgentRun {
+  id                   String    @id @default(cuid())
+  startedAt            DateTime  @default(now())
+  completedAt          DateTime?
+  mode                 String
+  isDryRun             Boolean   @default(true)
+  subredditsScanned    String?   // JSON array
+  opportunitiesFound   Int       @default(0)
+  draftsGenerated      Int       @default(0)
+  autoRepliesPosted    Int       @default(0)
+  queuedForReview      Int       @default(0)
+  errors               String?   // JSON array of error strings
+}
+
+model AuditEvent {
+  id            String       @id @default(cuid())
+  opportunityId String?
+  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  draftReplyId  String?
+  eventType     String
+  // discovered | classified | draft_generated | auto_posted | queued_for_review
+  // approved | rejected | copied | posted_manually | safety_check_failed
+  // safety_check_passed | crisis_flagged | scan_started | scan_completed | error
+  message       String
+  metadata      String?      // JSON string for extra context
+  createdAt     DateTime     @default(now())
+}
+
+model Settings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt @default(now())
+}
